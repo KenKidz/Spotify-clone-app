@@ -1,10 +1,27 @@
+
+
 <script setup lang="ts">
 import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
 import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
 import ChevronRight from 'vue-material-design-icons/ChevronRight.vue'
 import ChevronLeft from 'vue-material-design-icons/ChevronLeft.vue'
+import avatars from '@/assets/images/avatars/avatar.jpg'
+import spotifyLogo from '/public/images/icons/spotify-logo.png'
 
-const openMenu = ref<any>(false)
+const openMenu = ref<Boolean>(false)
+const menuChange = ref<any>()
+const itemsInProfile = ref<any>([
+  { title: 'Profile' },
+  { title: 'Log out' }
+])
+
+watch(menuChange, () => {
+  openMenu.value = !openMenu.value
+})
+
+const loadComponent = (value: any) => {
+
+}
 </script>
 
 <template>
@@ -33,48 +50,59 @@ const openMenu = ref<any>(false)
         </button>
       </div>
 
-      <button @click="openMenu = !openMenu" :class="openMenu ? 'bg-[#282828]' : 'bg-black'"
-              class="bg-black hover:bg-[#282828] rounded-full p-0.5 mr-8 mt-0.5 cursor-pointer">
-        <div class="flex items-center">
-          <img
-            class="rounded-full"
-            width="27"
-            src="https://yt3.ggpht.com/e9o-24_frmNSSVvjS47rT8qCHgsHNiedqgXbzmrmpsj6H1ketcufR1B9vLXTZRa30krRksPj=s88-c-k-c0x00ffffff-no-rj-mo"
+      <VMenu v-model="menuChange">
+        <template v-slot:activator="{props}">
+          <VBtn
+            class="me-4"
+            color="black"
+            v-bind="props"
+            rounded
+            text="Kenkid"
           >
-          <div class="text-white text-[14px] ml-1.5 font-semibold">John Weeks Dev</div>
-          <ChevronDown v-if="!openMenu" @click="openMenu = true" fillColor="#FFFFFF" :size="25" />
-          <ChevronUp v-else @click="openMenu = false" fillColor="#FFFFFF" :size="25" />
-        </div>
-      </button>
-
-      <span v-if="openMenu"
-            class="fixed w-[190px] bg-[#282828] shadow-2xl z-50 rounded-sm top-[52px] right-[35px] p-1 cursor-pointer">
-                <ul class="text-gray-200 font-semibold text-[14px]">
-                    <li class="px-3 py-2.5 hover:bg-[#3E3D3D] border-b border-b-gray-600">Profile</li>
-                    <li class="px-3 py-2.5 hover:bg-[#3E3D3D]">Log out</li>
-                </ul>
-            </span>
+            <template #prepend>
+              <VAvatar size="27" variant="tonal">
+                <VImg :src="avatars" />
+              </VAvatar>
+            </template>
+            <template #append>
+              <ChevronDown v-if="!openMenu" fillColor="#FFFFFF" :size="25" />
+              <ChevronUp v-else fillColor="#FFFFFF" :size="25" />
+            </template>
+          </VBtn>
+        </template>
+        <VList
+          class="mt-1"
+          bg-color="#282828"
+        >
+          <VListItem
+            v-for="(item, i) in itemsInProfile"
+            :key="i"
+            @click="loadComponent(item)">
+            <VListItemTitle>{{ item.title }}</VListItemTitle>
+          </VListItem>
+        </VList>
+      </VMenu>
     </div>
 
 
     <div id="SideNav" class="h-[100%] p-6 w-[240px] fixed z-50 bg-black">
       <RouterLink to="/">
-        <!--        <img width="125" src="/images/icons/spotify-logo.png" alt="">-->
+        <img width="125" :src="spotifyLogo" alt="spotify-icon">
       </RouterLink>
       <div class="my-8"></div>
       <ul>
-        <!--        <RouterLink to="/">-->
-        <!--          <MenuItem class="ml-[1px]" :iconSize="23" name="Home" iconString="home" pageUrl="/" />-->
-        <!--        </RouterLink>-->
-        <!--        <RouterLink to="/search">-->
-        <!--          <MenuItem class="ml-[1px]" :iconSize="24" name="Search" iconString="search" pageUrl="/search" />-->
-        <!--        </RouterLink>-->
-        <!--        <RouterLink to="/library">-->
-        <!--          <MenuItem class="ml-[2px]" :iconSize="23" name="Your Library" iconString="library" pageUrl="/library" />-->
-        <!--        </RouterLink>-->
+        <RouterLink to="/">
+          <MenuItem class="ml-[1px]" :iconSize="23" name="Home" iconString="home" pageUrl="/" />
+        </RouterLink>
+        <RouterLink to="/search">
+          <MenuItem class="ml-[1px]" :iconSize="24" name="Search" iconString="search" pageUrl="/search" />
+        </RouterLink>
+        <RouterLink to="/library">
+          <MenuItem class="ml-[2px]" :iconSize="23" name="Your Library" iconString="library" pageUrl="/library" />
+        </RouterLink>
         <div class="py-3.5"></div>
-        <!--        <MenuItem :iconSize="24" name="Create Playlist" iconString="playlist" pageUrl="/playlist" />-->
-        <!--        <MenuItem class="-ml-[1px]" :iconSize="27" name="Liked Songs" iconString="liked" pageUrl="/liked" />-->
+        <MenuItem :iconSize="24" name="Create Playlist" iconString="playlist" pageUrl="/playlist" />
+        <MenuItem class="-ml-[1px]" :iconSize="27" name="Liked Songs" iconString="liked" pageUrl="/liked" />
       </ul>
       <div class="border-b border-b-gray-700"></div>
       <ul>
@@ -103,5 +131,4 @@ const openMenu = ref<any>(false)
     <RouterView />
     <div class="mb-[100px]"></div>
   </div>
-  //adadva
 </template>
