@@ -12,6 +12,9 @@ import * as directives from 'vuetify/directives'
 import App from './App.vue'
 import router from './router'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import '@styles/styles.scss'
+import "@mdi/font/css/materialdesignicons.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 const vuetify = createVuetify({
   components,

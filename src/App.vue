@@ -1,10 +1,4 @@
-
-
 <script setup lang="ts">
-import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
-import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
-import ChevronRight from 'vue-material-design-icons/ChevronRight.vue'
-import ChevronLeft from 'vue-material-design-icons/ChevronLeft.vue'
 import avatars from '@/assets/images/avatars/avatar.jpg'
 import spotifyLogo from '/public/images/icons/spotify-logo.png'
 
@@ -25,31 +19,47 @@ const loadComponent = (value: any) => {
 </script>
 
 <template>
-  <div>
-    <div
-      id="TopNav"
-      class="
-            w-[calc(100%-240px)]
-            h-[60px]
-            fixed
-            right-0
-            z-20
-            bg-[#101010]
-            bg-opacity-80
-            flex
-            items-center
-            justify-between
-          "
-    >
-      <div class="flex items-center ml-6">
-        <button type="button" class="rounded-full bg-black p-[1px] cursor-pointer">
-          <ChevronLeft fillColor="#FFFFFF" :size="30" />
-        </button>
-        <button type="button" class="rounded-full bg-black p-[1px] hover:bg-[#] ml-4 cursor-pointer">
-          <ChevronRight fillColor="#FFFFFF" :size="30" />
-        </button>
+  <VLayout>
+    <v-navigation-drawer permanent class="SideNav px-8 py-4">
+      <RouterLink to="/">
+        <img width="125" :src="spotifyLogo" alt="spotify-icon">
+      </RouterLink>
+      <div class="my-8"></div>
+      <ul>
+        <RouterLink to="/">
+          <MenuItem :iconSize="23" name="Home" iconString="home" pageUrl="/" />
+        </RouterLink>
+        <RouterLink to="/search">
+          <MenuItem :iconSize="24" name="Search" iconString="search" pageUrl="/search" />
+        </RouterLink>
+        <RouterLink to="/library">
+          <MenuItem :iconSize="23" name="Your Library" iconString="library" pageUrl="/library" />
+        </RouterLink>
+        <div class="py-3"></div>
+        <MenuItem :iconSize="24" name="Create Playlist" iconString="playlist" pageUrl="/playlist" />
+        <MenuItem :iconSize="27" name="Liked Songs" iconString="liked" pageUrl="/liked" />
+      </ul>
+      <div class="border-b mt-2" style="border-color: rgb(55 65 81);"></div>
+      <v-list lines="one">
+        <v-list-item
+          class="pa-0"
+          v-for="n in 4"
+          :key="n"
+        >
+          <VListItemTitle class="list-item font-weight-bold text-gray-300">My Playlist #{{n}}</VListItemTitle>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar class="TopNav">
+      <div class="ml-4">
+        <VBtn variant="elevated" class="me-2" rounded size="30" color="black">
+          <VIcon size="30">mdi-chevron-left</VIcon>
+        </VBtn>
+        <VBtn variant="elevated" rounded size="30" color="black">
+          <VIcon size="30">mdi-chevron-right</VIcon>
+        </VBtn>
       </div>
-
+      <VSpacer />
       <VMenu v-model="menuChange">
         <template v-slot:activator="{props}">
           <VBtn
@@ -57,6 +67,7 @@ const loadComponent = (value: any) => {
             color="black"
             v-bind="props"
             rounded
+            variant="elevated"
             text="Kenkid"
           >
             <template #prepend>
@@ -65,8 +76,8 @@ const loadComponent = (value: any) => {
               </VAvatar>
             </template>
             <template #append>
-              <ChevronDown v-if="!openMenu" fillColor="#FFFFFF" :size="25" />
-              <ChevronUp v-else fillColor="#FFFFFF" :size="25" />
+              <VIcon v-if="!openMenu" color="#FFFFFF" size="25">mdi-chevron-down</VIcon>
+              <VIcon v-else color="#FFFFFF" size="25">mdi-chevron-up</VIcon>
             </template>
           </VBtn>
         </template>
@@ -82,53 +93,39 @@ const loadComponent = (value: any) => {
           </VListItem>
         </VList>
       </VMenu>
-    </div>
+    </v-app-bar>
 
-
-    <div id="SideNav" class="h-[100%] p-6 w-[240px] fixed z-50 bg-black">
-      <RouterLink to="/">
-        <img width="125" :src="spotifyLogo" alt="spotify-icon">
-      </RouterLink>
-      <div class="my-8"></div>
-      <ul>
-        <RouterLink to="/">
-          <MenuItem class="ml-[1px]" :iconSize="23" name="Home" iconString="home" pageUrl="/" />
-        </RouterLink>
-        <RouterLink to="/search">
-          <MenuItem class="ml-[1px]" :iconSize="24" name="Search" iconString="search" pageUrl="/search" />
-        </RouterLink>
-        <RouterLink to="/library">
-          <MenuItem class="ml-[2px]" :iconSize="23" name="Your Library" iconString="library" pageUrl="/library" />
-        </RouterLink>
-        <div class="py-3.5"></div>
-        <MenuItem :iconSize="24" name="Create Playlist" iconString="playlist" pageUrl="/playlist" />
-        <MenuItem class="-ml-[1px]" :iconSize="27" name="Liked Songs" iconString="liked" pageUrl="/liked" />
-      </ul>
-      <div class="border-b border-b-gray-700"></div>
-      <ul>
-        <li class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white">My Playlist #1</li>
-        <li class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white">My Playlist #2</li>
-        <li class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white">My Playlist #3</li>
-        <li class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white">My Playlist #4</li>
-      </ul>
-    </div>
-  </div>
-
-  <div
-    class="
-            fixed
-            right-0
-            top-0
-            w-[calc(100%-240px)]
-            overflow-auto
-            h-full
-            bg-gradient-to-b
-            from-[#1C1C1C]
-            to-black
-        "
-  >
-    <div class="mt-[70px]"></div>
-    <RouterView />
-    <div class="mb-[100px]"></div>
-  </div>
+    <VMain>
+      <div class="Main">
+        <div style="margin-top: 70px"></div>
+        <RouterView />
+        <div style="margin-bottom: 100px"></div>
+      </div>
+    </VMain>
+  </VLayout>
 </template>
+
+<style lang="scss" scoped>
+.TopNav {
+  width: calc(100% - 240px);
+  height: 60px;
+  background-color: #101010;
+  opacity: 80;
+}
+
+.Main {
+  background-image: linear-gradient(#1C1C1C, black);
+  width: calc(100% - 240px);
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto
+}
+
+.SideNav {
+  height: 100%;
+  width: 240px;
+  background-color: black;
+}
+</style>
