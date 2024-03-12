@@ -20,7 +20,7 @@ const loadComponent = (value: any) => {
 
 <template>
   <VLayout>
-    <v-navigation-drawer permanent class="SideNav px-8 py-4">
+    <v-navigation-drawer color="primary" permanent class="SideNav px-8 py-4">
       <RouterLink to="/">
         <img width="125" :src="spotifyLogo" alt="spotify-icon">
       </RouterLink>
@@ -95,37 +95,23 @@ const loadComponent = (value: any) => {
       </VMenu>
     </v-app-bar>
 
-    <VMain>
-      <div class="Main">
-        <div style="margin-top: 70px"></div>
-        <RouterView />
-        <div style="margin-bottom: 100px"></div>
-      </div>
+    <VMain class="Main">
+      <RouterView />
     </VMain>
   </VLayout>
 </template>
 
 <style lang="scss" scoped>
 .TopNav {
-  width: calc(100% - 240px);
   height: 60px;
-  background-color: #101010;
-  opacity: 80;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .Main {
-  background-image: linear-gradient(#1C1C1C, black);
-  width: calc(100% - 240px);
-  position: fixed;
-  right: 0;
-  top: 0;
-  height: 100%;
-  overflow: auto
+  background-image: linear-gradient(rgb(var(--v-theme-on-primary)), black);
 }
 
-.SideNav {
-  height: 100%;
-  width: 240px;
-  background-color: black;
-}
 </style>

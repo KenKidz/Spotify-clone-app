@@ -33,12 +33,12 @@ onMounted(() => {
 
 <template>
     <li
-        class="flex items-center justify-between rounded-md hover:bg-[#2A2929]"
+        class="list-container d-flex align-center justify-space-between rounded-lg"
         @mouseenter="isHover = true"
         @mouseleave="isHover = false"
     >
-        <div class="flex items-center w-full py-1.5">
-            <div v-if="isHover" class="w-[40px] ml-[14px] mr-[6px] cursor-pointer">
+        <div class="d-flex align-center w-100 py-2">
+            <div v-if="isHover" class="item-list ml-3 mr-2" style="width: 40px;">
                 <Play
                     v-if="!isPlaying"
                     fillColor="#FFFFFF"
@@ -54,7 +54,7 @@ onMounted(() => {
 
                 <Pause v-else fillColor="#FFFFFF" :size="25" @click="useSong.playOrPauseSong()"/>
             </div>
-            <div v-else class="text-white font-semibold w-[40px] ml-5">
+            <div v-else class="text-white font-weight-medium ml-5" style="width: 40px">
                 <span :class="{'text-green-500': currentTrack && currentTrack.name === track.name}">
                     {{ index }}
                 </span>
@@ -62,17 +62,17 @@ onMounted(() => {
             <div>
                 <div
                     :class="{'text-green-500': currentTrack && currentTrack.name === track.name}"
-                    class="text-white font-semibold"
+                    class="text-white font-weight-medium"
                 >
                     {{ track.name }}
                 </div>
-                <div class="text-sm font-semibold text-gray-400">{{ artist.name }}</div>
+                <div class="text-sm font-weight-medium text-gray-400">{{ artist.name }}</div>
             </div>
         </div>
-        <div class="flex items-center">
-            <button type="button" v-if="isHover">
+        <div class="d-flex align-center">
+            <IconBtn v-if="isHover">
                 <Heart fillColor="#1BD760" :size="22"/>
-            </button>
+            </IconBtn>
             <div
                 v-if="isTrackTime"
                 class="text-xs mx-5 text-gray-400"
@@ -82,3 +82,13 @@ onMounted(() => {
         </div>
     </li>
 </template>
+
+<style lang="scss" scoped>
+.list-container:hover {
+  background: #2A2929;
+}
+
+.item-list:hover {
+  cursor: pointer;
+}
+</style>

@@ -1,0 +1,71 @@
+import type { VuetifyOptions } from 'vuetify'
+const theme : VuetifyOptions['theme'] = {
+  defaultTheme:'dark',
+  themes: {
+    dark: {
+      dark: true,
+      colors: {
+        'primary': '#000000',
+        'on-primary': '#1C1C1C',
+        'secondary': '#101010',
+        'on-secondary': '#fff',
+        'success': '#226B5E',
+        'on-success': '#fff',
+        'purple': '#7367F0',
+        'pink': '#EA54C0',
+        'info': '#00CFE8',
+        'infomation': '#18A0FB',
+        'on-info': '#fff',
+        'warning': '#FF9F43',
+        'on-warning': '#fff',
+        'error': '#EA5455',
+        'background': '#F8F7FA',
+        'on-background': '#2F2B3D',
+        'on-surface': '#2F2B3D',
+        'on-featured': '#d27a12',
+        'grey-50': '#FAFAFA',
+        'grey-100': '#F5F5F5',
+        'grey-200': '#EEEEEE',
+        'grey-300': '#d1d5db00',
+        'grey-400': '#9ca3af00',
+        'grey-500': '#9E9E9E',
+        'grey-600': '#757575',
+        'grey-700': '#616161',
+        'grey-800': '#424242',
+        'grey-900': '#212121',
+        'perfect-scrollbar-thumb': '#DBDADE',
+        'skin-bordered-background': '#fff',
+        'skin-bordered-surface': '#fff',
+        'text-color-01': '#4B465C',
+        'text-color-02': '#817D8D',
+        'text-color-03': '#A8AAAE',
+      },
+
+      variables: {
+        'code-color': '#d400ff',
+        'overlay-scrim-background': '#4C4E64',
+        'tooltip-background': '#4A5072',
+        'overlay-scrim-opacity': 0.5,
+        'hover-opacity': 0.04,
+        'focus-opacity': 0.12,
+        'selected-opacity': 0.06,
+        'activated-opacity': 0.16,
+        'pressed-opacity': 0.14,
+        'dragged-opacity': 0.1,
+        'disabled-opacity': 0.42,
+        'border-color': '#2F2B3D',
+        'border-opacity': 0.16,
+        'high-emphasis-opacity': 0.78,
+        'medium-emphasis-opacity': 0.68,
+        'switch-opacity': 0.2,
+        'switch-disabled-track-opacity': 0.3,
+        'switch-disabled-thumb-opacity': 0.4,
+        'switch-checked-disabled-opacity': 0.3,
+
+        // Shadows
+        'shadow-key-umbra-color': '#2F2B3D',
+      },
+    }
+  }
+}
+export default theme
