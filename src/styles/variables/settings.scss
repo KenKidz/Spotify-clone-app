@@ -1,0 +1,7 @@
+$font-family-custom: "GothamBook", sans-serif;
+
+
+@forward 'vuetify/settings' with (
+  $body-font-family: $font-family-custom !default,
+  $button-font-weight: 550,
+);

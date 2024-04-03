@@ -1,5 +1,5 @@
-<script setup>
-import { ref, onMounted } from 'vue'
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue'
 
 import VolumeMute from 'vue-material-design-icons/VolumeMute.vue';
 import VolumeHigh from 'vue-material-design-icons/VolumeHigh.vue';
@@ -10,59 +10,65 @@ const useSong = useSongStore()
 const { audio } = storeToRefs(useSong)
 
 let isHover = ref(false)
+let vol = ref<number>(80)
+let isVolMute = ref<boolean>(false)
+let volSave = ref<number>(0)
 
-// PLAYER REFS
-let vol = ref(80)
-let volume = ref(null)
+isVolMute.value = vol.value == 0;
 
-onMounted(() => {
-    volume.value.addEventListener("input", (e) => {
-        audio.value.volume = e.currentTarget.value / 100;
-    });
+watch(() => vol.value, (newVolume) => {
+  if (audio.value) {
+    audio.value.volume = newVolume / 100
+    if(newVolume != 0) {
+      volSave.value = newVolume
+    }
+  }
 })
+
+const onVolIconClick = () => {
+  isVolMute.value = !isVolMute.value
+  if(isVolMute.value) {
+    vol.value = 0
+  } else {
+    if(volSave.value) {
+      vol.value = volSave.value
+    } else {
+      vol.value = 80
+    }
+  }
+}
+
 </script>
 
 <template>
-    <VolumeMute v-if="vol == 0" fillColor="#FFFFFF" :size="20" />
-    <VolumeHigh v-else fillColor="#FFFFFF" :size="20" />
     <div
-        class="flex items-center ml-2 w-[150px] relative mt-2 mb-[23px]"
+        class="d-flex align-center"
+        style="width: 150px;"
         @mouseenter="isHover = true"
         @mouseleave="isHover = false"
     >
-        <input
-            v-model="vol"
-            ref="volume"
-            type="range"
-            class="
-                mt-[24px]
-                absolute
-                rounded-full
-                my-2
-                w-full
-                h-0
-                z-40
-                appearance-none
-                bg-opacity-100
-                focus:outline-none
-                accent-white
-            "
-            :class="{ 'rangeDotHidden': !isHover }"
+        <VSlider
+          v-model="vol"
+          color="#fff"
+          :min="0"
+          :max="100"
+          :thumb-size="isHover ? 10 : 0"
+          :track-fill-color="isHover ? 'green-accent-4': '#fff'"
+          style="height: 40px"
         >
-        <div
-            class="pointer-events-none mt-[6px] absolute h-[4px] z-10 inset-y-0 left-0 w-0"
-            :style="`width: ${vol}%;`"
-            :class="isHover ? 'bg-green-500' : 'bg-white'"
-        />
-        <div class="absolute h-[4px] z-[-0] mt-[6px] inset-y-0 left-0 w-full bg-gray-500 rounded-full" />
+          <template #prepend>
+            <div
+              class="hover-cursor-pointer pt-2"
+              @click="onVolIconClick"
+              @mouseenter="isHover = true"
+              @mouseleave="isHover = false">
+              <VolumeMute v-if="isVolMute" :fillColor="isHover ? '#00C853' : '#FFFFFF'" :size="20" />
+              <VolumeHigh v-else :fillColor="isHover ? '#00C853' : '#FFFFFF'" :size="20" />
+            </div>
+          </template>
+        </VSlider>
     </div>
 </template>
 
 <style>
-.rangeDotHidden[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 0;
-  height: 0;
-}
 </style>

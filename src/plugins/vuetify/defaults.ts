@@ -10,5 +10,12 @@ export default {
   },
   VAppBar: {
     color: 'secondary',
-  }
+  },
+  VCheckbox: {
+    color: 'green-accent-4',
+    hideDetails: 'auto',
+  },
+  VTextField: {
+    color: 'green-accent-4'
+  },
 }

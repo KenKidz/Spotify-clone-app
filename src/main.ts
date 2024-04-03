@@ -10,6 +10,9 @@ import vuetify from '@/plugins/vuetify'
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import '@styles/styles.scss'
+import {loadFonts} from '@/plugins/webfontloader'
+
+loadFonts()
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)

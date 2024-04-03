@@ -1,13 +1,20 @@
 import { defineStore } from 'pinia'
 import artist from '../artist.json'
 
+interface StoreInterface {
+  isPlaying: boolean
+  audio: HTMLAudioElement
+  currentArtist: any
+  currentTrack: any
+}
+
 export const useSongStore = defineStore('song', {
   state: () => ({
     isPlaying: false,
-    audio: null,
+    audio: <HTMLAudioElement>{},
     currentArtist: null,
     currentTrack: null
-  }),
+  } as StoreInterface),
   actions: {
     loadSong(artist: any, track: any) {
       this.currentArtist = artist
@@ -24,21 +31,21 @@ export const useSongStore = defineStore('song', {
 
       setTimeout(() => {
         this.isPlaying = true
-        this.audio.play()
+        this.audio?.play()
       }, 200)
     },
 
     playOrPauseSong() {
-      if (this.audio.paused) {
+      if (this.audio?.paused) {
         this.isPlaying = true
         this.audio.play()
       } else {
         this.isPlaying = false
-        this.audio.pause()
+        this.audio?.pause()
       }
     },
 
-    playOrPauseThisSong(artist, track) {
+    playOrPauseThisSong(artist: string, track: any) {
       if (!this.audio || !this.audio.src || (this.currentTrack.id !== track.id)) {
         this.loadSong(artist, track)
         return
@@ -47,12 +54,12 @@ export const useSongStore = defineStore('song', {
       this.playOrPauseSong()
     },
 
-    prevSong(currentTrack) {
+    prevSong(currentTrack: any) {
       let track = artist.tracks[currentTrack.id - 2]
       this.loadSong(artist, track)
     },
 
-    nextSong(currentTrack) {
+    nextSong(currentTrack: any) {
       if (currentTrack.id === artist.tracks.length) {
         let track = artist.tracks[0]
         this.loadSong(artist, track)
@@ -70,7 +77,7 @@ export const useSongStore = defineStore('song', {
 
     resetState() {
       this.isPlaying = false
-      this.audio = null
+      this.audio = <HTMLAudioElement>{}
       this.currentArtist = null
       this.currentTrack = null
     }

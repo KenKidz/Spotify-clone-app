@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "GothamBook";
+  src: url("@/plugins/fontFamily/GothamBook.ttf");
+}
+
 .text-white {
   color: white;
 }
@@ -10,8 +15,16 @@
   color: rgba(var(--v-theme-grey-300));
 }
 
+.text-gray-500 {
+  color: rgba(var(--v-theme-grey-500));
+}
+
 .text-green-500 {
   color: rgba(var(--v-theme-success));
+}
+
+.bg-green-500 {
+
 }
 
 .text-sm {
@@ -47,4 +60,17 @@ a {
 
 .overflow-x-hidden {
   overflow-x: hidden;
+}
+
+.text-hover-white:hover {
+  color: white;
+}
+
+.hover-cursor-pointer:hover {
+  cursor: pointer;
+}
+
+.v-btn--disabled {
+  background: black !important;
+  color: #423e3e !important;
 }

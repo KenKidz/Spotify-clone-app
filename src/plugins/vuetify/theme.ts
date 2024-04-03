@@ -28,7 +28,7 @@ const theme : VuetifyOptions['theme'] = {
         'grey-200': '#EEEEEE',
         'grey-300': '#d1d5db00',
         'grey-400': '#9ca3af00',
-        'grey-500': '#9E9E9E',
+        'grey-500': '#6B7280',
         'grey-600': '#757575',
         'grey-700': '#616161',
         'grey-800': '#424242',

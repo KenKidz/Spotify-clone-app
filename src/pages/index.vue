@@ -101,48 +101,50 @@ const songItems = ref<ILibrary[]>([
 </script>
 
 <template>
-  <div class="pa-6">
-    <VBtn
-      variant="text"
-      class="text-white text-2xl font-weight-medium"
-    >
-      Podcasts to make you smarter
-    </VBtn>
+  <div style="margin-bottom: 90px;">
+    <div class="pa-6">
+      <VBtn
+        variant="text"
+        class="text-white text-2xl font-weight-medium"
+      >
+        Podcasts to make you smarter
+      </VBtn>
 
-    <div class="py-2"></div>
+      <div class="py-2"></div>
 
-    <div class="d-flex">
-      <HomeCard v-for="data in podcastItems" :key="data.id" :item="data" />
+      <div class="d-flex">
+        <HomeCard v-for="data in podcastItems" :key="data.id" :item="data" />
+      </div>
     </div>
-  </div>
 
-  <div class="pa-6">
-    <VBtn
-      variant="text"
-      class="text-white text-2xl font-weight-medium"
-    >
-      Recommended radio
-    </VBtn>
+    <div class="pa-6">
+      <VBtn
+        variant="text"
+        class="text-white text-2xl font-weight-medium"
+      >
+        Recommended radio
+      </VBtn>
 
-    <div class="py-2"></div>
+      <div class="py-2"></div>
 
-    <div class="d-flex">
-      <HomeCard v-for="data in radioItems" :key="data.id" :item="data" />
+      <div class="d-flex">
+        <HomeCard v-for="data in radioItems" :key="data.id" :item="data" />
+      </div>
     </div>
-  </div>
 
-  <div class="pa-6">
-    <VBtn
-      variant="text"
-      class="text-white text-2xl font-weight-medium"
-    >
-      Recommended songs
-    </VBtn>
+    <div class="pa-6">
+      <VBtn
+        variant="text"
+        class="text-white text-2xl font-weight-medium"
+      >
+        Recommended songs
+      </VBtn>
 
-    <div class="py-2"></div>
+      <div class="py-2"></div>
 
-    <div class="d-flex">
-      <HomeCard v-for="data in songItems" :key="data.id" :item="data" />
+      <div class="d-flex">
+        <HomeCard v-for="data in songItems" :key="data.id" :item="data" />
+      </div>
     </div>
   </div>
 </template>
