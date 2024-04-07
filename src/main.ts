@@ -4,19 +4,23 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 // Vuetify
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-
 import App from './App.vue'
 import router from './router'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import vuetify from '@/plugins/vuetify'
 
-const vuetify = createVuetify({
-  components,
-  directives,
-})
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import '@styles/styles.scss'
+import { loadFonts } from '@/plugins/webfontloader'
+import Toast from 'vue-toastification'
+import type { PluginOptions } from 'vue-toastification'
+import { POSITION } from 'vue-toastification'
+import "vue-toastification/dist/index.css";
+
+loadFonts()
+
+const toastOptions: PluginOptions = {
+  position: POSITION.TOP_RIGHT,
+}
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
@@ -25,5 +29,6 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
+app.use(Toast, toastOptions);
 
 app.mount('#app')

@@ -40,14 +40,14 @@ const isHover = () => {
 
 <template>
   <li
-    class="flex items-center justify-start pb-4 cursor-pointer"
+    class="d-flex align-center justify-start pb-4 cursor-pointer"
     @mouseenter="isHover()"
     @mouseleave="isHover()"
   >
     <img :width="iconSize" :src="`/images/icons/${icon}.png`">
     <div
       :class="textIsHover ? 'text-white ' : 'text-gray-400'"
-      class="font-semibold text-[14px] ml-4 mt-0.5"
+      class="font-weight-bold ml-4 mt-1"
     >
       <span :class="route.path === pageUrl ? 'text-white' : ''">{{ name }}</span>
     </div>

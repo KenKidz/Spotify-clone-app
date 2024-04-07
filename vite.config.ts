@@ -4,17 +4,44 @@ import { defineConfig } from 'vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import vue from '@vitejs/plugin-vue'
+import VueRouter from 'unplugin-vue-router/vite'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
+import Layouts from 'vite-plugin-vue-layouts';
+import vuetify from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    VueRouter({
+      routesFolder: [
+        {
+          src: 'src/pages',
+          path: '',
+          // override globals
+          exclude: (excluded) => excluded,
+          filePatterns: (filePatterns) => filePatterns,
+          extensions: (extensions) => extensions,
+        },
+      ],
+    }),
     vue(),
+    vuetify({
+      styles: {
+        configFile: 'src/styles/variables/settings.scss',
+      },
+    }),
+    Layouts({
+      layoutsDirs: ['src/layouts']
+    }),
     AutoImport({
-      imports: ['vue', 'vue-router', 'pinia'],
+      imports: ['vue', VueRouterAutoImports, {
+        // add any other imports you were relying on
+        'vue-router/auto': ['useLink']
+      }, 'pinia'],
       vueTemplate: true,
     }),
     Components({
-      dirs: ['src/@core/components', 'src/views/demos', 'src/components'],
+      dirs: ['src/@core/components', 'src/components'],
       dts: true,
     }),
   ],

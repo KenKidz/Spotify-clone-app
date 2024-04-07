@@ -2,13 +2,21 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts",
     "components.d.ts"],
-  "exclude": ["src/**/__tests__/*"],
+  "exclude": [
+    "src/**/__tests__/*",
+    "dist",
+    "node_modules",
+    "src/@iconify/*"
+  ],
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "@styles/*": [
+        "src/styles/*"
+      ]
+    },
   }
 }
