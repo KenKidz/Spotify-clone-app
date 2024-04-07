@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ILibrary } from '@/interfaces/LibraryInterface'
+import Albums from '@/services/Albums.service'
 
 const podcastItems = ref<ILibrary[]>([
   {
@@ -97,6 +98,14 @@ const songItems = ref<ILibrary[]>([
     subTitle: "Subtitle is here"
   },
 ])
+
+onBeforeMount(async () => {
+  await loadData()
+})
+
+const loadData = async () => {
+  await Albums.getAlbums()
+}
 
 </script>
 

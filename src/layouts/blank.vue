@@ -2,10 +2,10 @@
 
 import { useUserStore } from '@/stores/userStore'
 
-// const userStore = useUserStore()
-// onMounted(() => {
-//   userStore.init()
-// })
+const userStore = useUserStore()
+onMounted(() => {
+  userStore.init()
+})
 </script>
 
 <template>

@@ -3,6 +3,8 @@ import Signin from '@/pageComponents/login/Signin.vue'
 import Signup from '@/pageComponents/login/Signup.vue'
 import { useUserStore } from '@/stores/userStore'
 import router from '@/router'
+import {createUserWithEmailAndPassword} from 'firebase/auth'
+import {auth} from '@/plugins/firebaseConfig'
 
 const userStore = useUserStore()
 const step = ref<number>(1)

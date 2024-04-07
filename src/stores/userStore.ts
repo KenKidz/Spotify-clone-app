@@ -23,6 +23,7 @@ export const useUserStore = defineStore('userStore', {
     userInfo: {},
     isLoading: false,
     hasFailed: false,
+    isAuth: false,
     localError: null
   } as StoreInterface),
   actions: {
@@ -58,10 +59,15 @@ export const useUserStore = defineStore('userStore', {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           this.userInfo = user
+          this.isAuth = true
           this.isLoading = true
+          if (router.isReady() && router.currentRoute.value.path === '/login') {
+            router.push('/')
+          }
         } else {
           this.userInfo = null
           this.isLoading = false
+          this.isAuth = false
           router.replace('/login')
         }
       })

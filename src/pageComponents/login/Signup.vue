@@ -1,12 +1,73 @@
 <script lang="ts" setup>
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { auth } from '@/plugins/firebaseConfig'
+import router from '@/router'
+import { useUserStore } from '@/stores/userStore'
+import { useToast } from 'vue-toastification'
+import { AuthErrorCodes } from '@/constants/enums'
+import type { VForm } from 'vuetify/components'
+import { emailValidator, lengthValidator, passwordValidator, requiredValidator } from '@/utils/validators'
+
+interface UserSignUp {
+  firstName?: string
+  lastName?: string
+  email: string
+  password: string
+}
 interface Props {
   step: number
 }
 interface Emits {
   (e: "onLogInBtnClick"): void;
+  (e: "onSignUp", value: any): void;
 }
 
+const toast = useToast()
 const emit = defineEmits<Emits>()
+const workingItem = ref<UserSignUp>(<UserSignUp>{})
+const userStore = useUserStore()
+const isPasswordVisible = ref<boolean>(false)
+const refVForm = ref<VForm>()
+const loading = ref<boolean>(false)
+
+const onSignUp = async () => {
+  refVForm.value?.validate()
+    .then(async ({valid: isValid}) => {
+      if (isValid) {
+        loading.value = true
+        try {
+          const res = await createUserWithEmailAndPassword(auth, workingItem.value.email, workingItem.value.password)
+          await updateProfile(auth.currentUser, {
+            displayName: workingItem.value?.lastName + ' ' + workingItem.value?.firstName,
+          }).catch((error: any) => {
+            console.log(error)
+          })
+          if (res) {
+            userStore.isAuth = true
+            router.replace('/')
+          }
+        } catch (error: any) {
+          switch(error.code) {
+            case AuthErrorCodes.EMAIL_ALREADY_IN_USE:
+              toast.error("Email already in use")
+              break
+            case AuthErrorCodes.INVALID_EMAIL:
+              toast.error("Invalid email")
+              break
+            case AuthErrorCodes.OPERATION_NOT_ALLOWED:
+              toast.error("Operation not allowed")
+              break
+            case AuthErrorCodes.WEAK_PASSWORD:
+              toast.error("Weak password")
+              break
+            default:
+              toast.error("Something went wrong")
+          }
+        }
+        loading.value = false
+      }
+    })
+}
 
 const onLoginBtnClick = () => {
   emit('onLogInBtnClick')
@@ -37,52 +98,71 @@ const onLoginBtnClick = () => {
         </h5>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="10" md="9">
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  label="First Name"
-                  variant="outlined"
-                  density="comfortable"
-                  color="green-accent-4"
-                  class="mt-4"
-                />
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  label="Last Name"
-                  variant="outlined"
-                  density="comfortable"
-                  color="green-accent-4"
-                  class="mt-4"
-                />
-              </v-col>
-            </v-row>
-            <v-text-field
-              label="Email"
-              variant="outlined"
-              density="comfortable"
-              color="green-accent-4"
-            />
-            <v-text-field
-              label="Password"
-              variant="outlined"
-              density="comfortable"
-              color="green-accent-4"
-              type="password"
-            />
-            <v-row>
-              <v-col cols="12" sm="7">
-                <v-checkbox
-                  label="I Accept AAE"
-                  class="mt-n1"
-                  color="green-accent-4"
-                ></v-checkbox>
-              </v-col>
-              <v-col cols="12" sm="5" class="ma-auto">
-                <span class="caption text-green-accent-4">Terms &Conditions</span>
-              </v-col>
-            </v-row>
-            <v-btn color="green-accent-4" block>Sign up</v-btn>
+            <VForm ref="refVForm">
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="workingItem.firstName"
+                    label="First Name"
+                    variant="outlined"
+                    density="comfortable"
+                    color="green-accent-4"
+                    class="mt-4"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="workingItem.lastName"
+                    label="Last Name"
+                    variant="outlined"
+                    density="comfortable"
+                    color="green-accent-4"
+                    class="mt-4"
+                  />
+                </v-col>
+              </v-row>
+              <v-text-field
+                v-model="workingItem.email"
+                label="Email *"
+                variant="outlined"
+                density="comfortable"
+                color="green-accent-4"
+                :rules="[requiredValidator, emailValidator]"
+                @keyup.enter="onSignUp"
+              />
+              <v-text-field
+                v-model="workingItem.password"
+                label="Password *"
+                variant="outlined"
+                density="comfortable"
+                color="green-accent-4"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                :rules="[requiredValidator, passwordValidator]"
+                @keyup.enter="onSignUp"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+              />
+              <v-row>
+                <v-col cols="12" sm="7">
+                  <v-checkbox
+                    label="I Accept AAE"
+                    class="mt-n1"
+                    color="green-accent-4"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" sm="5" class="ma-auto">
+                  <span class="caption text-green-accent-4">Terms &Conditions</span>
+                </v-col>
+              </v-row>
+              <v-btn
+                color="green-accent-4"
+                block
+                :loading="loading"
+                @click="onSignUp"
+              >
+                Sign up
+              </v-btn>
+            </VForm>
 
             <h5
               class="text-center  grey--text mt-4 mb-3"

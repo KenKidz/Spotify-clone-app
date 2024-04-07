@@ -2,6 +2,7 @@
 import { profileMenu } from '@/constants/enums'
 import { useUserStore } from '@/stores/userStore'
 import router from '@/router'
+import defaultAvatar from "@images/avatars/default-avatar.png";
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -60,7 +61,7 @@ const onNextClick = () => {
       variant="tonal"
       size="35"
     >
-      <VImg :src="userStore.userInfo?.photoURL"/>
+      <VImg :src="userStore.userInfo?.photoURL || defaultAvatar"/>
       <VMenu
         activator="parent"
         width="180"
