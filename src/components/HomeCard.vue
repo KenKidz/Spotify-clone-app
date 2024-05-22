@@ -1,15 +1,9 @@
 <script lang="ts" setup>
 import { toRefs } from 'vue'
-
-interface itemInterface {
-  id: any,
-  image: string,
-  title: string,
-  subTitle: string
-}
+import { convertDateTime } from '../utils'
 
 interface Props {
-  item?: itemInterface
+  item?: any
 }
 
 const router = useRouter()
@@ -25,9 +19,22 @@ const goToLibrary = () => {
 
 <template>
   <div @click="goToLibrary" class="home-card rounded-lg">
-    <VImg class="rounded-lg" :src="item.image" height="160" width="160" cover alt="thumb-img" />
-    <div class="text-white pt-4 font-weight-bold" style="font-size: 17px">{{ item.title }}</div>
-    <div class="text-gray-400 pt-1 pb-3" style="font-size: 14px">{{ item.subTitle }}</div>
+    <VImg class="rounded-lg" :src="item.coverArt.sources[2].url" height="160" width="160" cover alt="thumb-img" />
+    <div class="text-white pt-4 font-weight-bold"
+         style="
+          font-size: 17px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;">
+      {{ item.name }}
+      <v-tooltip
+        activator="parent"
+        location="bottom"
+        opacity="0.2"
+        attach
+      >{{item.name}}</v-tooltip>
+    </div>
+    <div class="text-gray-400 pt-1 pb-3" style="font-size: 14px">{{ convertDateTime(item.releaseDate.isoString) }}</div>
   </div>
 </template>
 
@@ -36,6 +43,7 @@ const goToLibrary = () => {
   background-color: #111111;
   padding: 16px;
   margin: 8px;
+  width: 200px;
   cursor: pointer;
 }
 

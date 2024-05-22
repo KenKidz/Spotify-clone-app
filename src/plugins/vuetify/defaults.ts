@@ -16,6 +16,7 @@ export default {
     hideDetails: 'auto',
   },
   VTextField: {
-    color: 'green-accent-4'
+    color: 'green-accent-4',
+    hideDetails: 'auto',
   },
 }

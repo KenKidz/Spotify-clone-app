@@ -15,6 +15,8 @@ import Toast from 'vue-toastification'
 import type { PluginOptions } from 'vue-toastification'
 import { POSITION } from 'vue-toastification'
 import "vue-toastification/dist/index.css";
+import { onAuthStateChanged } from 'firebase/auth'
+import {auth} from "@/plugins/firebaseConfig"
 
 loadFonts()
 
@@ -24,11 +26,15 @@ const toastOptions: PluginOptions = {
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
-const app = createApp(App)
+let app: any
+onAuthStateChanged(auth, () => {
+  if(!app) {
+    app = createApp(App)
+    app.use(pinia)
+    app.use(router)
+    app.use(vuetify)
+    app.use(Toast, toastOptions);
 
-app.use(pinia)
-app.use(router)
-app.use(vuetify)
-app.use(Toast, toastOptions);
-
-app.mount('#app')
+    app.mount('#app')
+  }
+})

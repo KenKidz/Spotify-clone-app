@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
-import type { IUserInfo } from '@/interfaces/userInterface'
+import type { User } from '@/interfaces/userInterface'
 import router from '@/router'
 import {
-  getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
@@ -11,7 +10,7 @@ import {
 import { auth } from '@/plugins/firebaseConfig'
 
 interface StoreInterface {
-  userInfo: IUserInfo | null
+  userInfo: User | null
   isLoading: boolean
   hasFailed: boolean
   isAuth: boolean
@@ -55,20 +54,16 @@ export const useUserStore = defineStore('userStore', {
       router.replace('/login')
     },
 
-    init() {
+    async init() {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           this.userInfo = user
           this.isAuth = true
           this.isLoading = true
-          if (router.isReady() && router.currentRoute.value.path === '/login') {
-            router.push('/')
-          }
         } else {
           this.userInfo = null
           this.isLoading = false
           this.isAuth = false
-          router.replace('/login')
         }
       })
     }

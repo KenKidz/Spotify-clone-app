@@ -28,16 +28,18 @@ onMounted(() => {
 })
 
 const timeupdate = () => {
-  audio.value.addEventListener('timeupdate', function() {
-    duration.value = audio.value.duration
-    const minutes = Math.floor(audio.value.currentTime / 60)
-    const seconds = Math.floor(audio.value.currentTime - minutes * 60)
-    isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
-    const minutesTotal = Math.floor(duration.value / 60)
-    const secondsTotal = Math.floor(duration.value % 60)
-    isTrackTimeTotal.value = minutesTotal + ':' + secondsTotal.toString().padStart(2, '0')
-    seeker.value = audio.value.currentTime
-  })
+  if(audio.value) {
+    audio.value.addEventListener('timeupdate', function() {
+      duration.value = audio.value.duration
+      const minutes = Math.floor(audio.value.currentTime / 60)
+      const seconds = Math.floor(audio.value.currentTime - minutes * 60)
+      isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
+      const minutesTotal = Math.floor(duration.value / 60)
+      const secondsTotal = Math.floor(duration.value % 60)
+      isTrackTimeTotal.value = minutesTotal + ':' + secondsTotal.toString().padStart(2, '0')
+      seeker.value = audio.value.currentTime
+    })
+  }
 }
 
 const seekAudio = () => {
@@ -59,7 +61,7 @@ watch(() => isTrackTimeCurrent.value, (time) => {
 <template>
   <VCard
     v-if="audio"
-    class="music-player w-100"
+    class="music-player w-100 pa-0"
   >
     <VRow no-gutters>
       <VCol class="d-flex align-center" cols="3">

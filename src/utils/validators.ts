@@ -38,3 +38,18 @@ export const lengthValidator = (value: unknown, length: number) => {
 
   return String(value).length <= length || `Require ${length} characters.`
 }
+
+export const phoneNumberValidator = (phoneNumber: string | undefined) => {
+  if(phoneNumber){
+    const regExp = /^([0-9]{10,20})$/;
+    const validPhoneNumber = regExp.test(phoneNumber);
+
+    if (validPhoneNumber) {
+      return true;
+    } else {
+      return "Số điện thoại không hợp lệ";
+    }
+  }
+
+  return true;
+}
