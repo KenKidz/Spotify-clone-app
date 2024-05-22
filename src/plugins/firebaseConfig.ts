@@ -9,8 +9,8 @@ const config = {
   messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_APP_ID
 }
-initializeApp(config)
-const app = initializeApp(config)
+
+export const app = initializeApp(config)
 
 export const auth = getAuth(app)
 

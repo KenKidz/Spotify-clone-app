@@ -18,6 +18,8 @@ const isCurrentPage = computed(() => {
 const loadComponent = (value: any) => {
   if(value.id == profileMenu.Logout) {
     userStore.logOut()
+  } else {
+    router.push('/profile')
   }
 }
 
@@ -31,7 +33,7 @@ const onNextClick = () => {
 </script>
 
 <template>
-  <v-app-bar class="TopNav">
+  <v-app-bar v-if="userStore.userInfo" class="TopNav">
     <div class="ml-4">
       <VBtn
         variant="elevated"
@@ -86,6 +88,7 @@ const onNextClick = () => {
 
 <style lang="scss" scoped>
 .TopNav {
+  position: fixed !important;
   height: 60px;
   opacity: 0.8;
   display: flex;

@@ -11,7 +11,6 @@ const useSong = useSongStore()
 const { isPlaying, currentTrack } = storeToRefs(useSong)
 
 onMounted(() => {
-  userStore.init()
   isPlaying.value = false
 })
 </script>

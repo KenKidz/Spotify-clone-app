@@ -6,7 +6,7 @@ import { useUserStore } from '@/stores/userStore'
 import { useToast } from 'vue-toastification'
 import { AuthErrorCodes } from '@/constants/enums'
 import type { VForm } from 'vuetify/components'
-import { emailValidator, lengthValidator, passwordValidator, requiredValidator } from '@/utils/validators'
+import { emailValidator, passwordValidator, requiredValidator } from '@/utils/validators'
 
 interface UserSignUp {
   firstName?: string
