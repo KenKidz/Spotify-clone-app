@@ -1,35 +1,4 @@
-<script setup>
-import { ref, toRefs, onMounted } from 'vue'
-import Heart from 'vue-material-design-icons/Heart.vue';
-import Play from 'vue-material-design-icons/Play.vue';
-import Pause from 'vue-material-design-icons/Pause.vue';
 
-import { useSongStore } from '../stores/song'
-import { storeToRefs } from 'pinia';
-const useSong = useSongStore()
-const { isPlaying, currentTrack } = storeToRefs(useSong)
-
-let isHover = ref(false)
-let isTrackTime = ref(null)
-
-const props = defineProps({
-    track: Object,
-    artist: Object,
-    index: Number,
-})
-
-const { track, artist, index } = toRefs(props)
-
-onMounted(() => {
-    const audio = new Audio(track.value.path);
-    audio.addEventListener('loadedmetadata', function() {
-        const duration = audio.duration;
-        const minutes = Math.floor(duration / 60);
-        const seconds = Math.floor(duration % 60);
-        isTrackTime.value = minutes+':'+seconds.toString().padStart(2, '0')
-    });
-})
-</script>
 
 <template>
     <li
@@ -82,6 +51,39 @@ onMounted(() => {
         </div>
     </li>
 </template>
+
+<script setup>
+import { ref, toRefs, onMounted } from 'vue'
+import Heart from 'vue-material-design-icons/Heart.vue';
+import Play from 'vue-material-design-icons/Play.vue';
+import Pause from 'vue-material-design-icons/Pause.vue';
+
+import { useSongStore } from '../stores/song'
+import { storeToRefs } from 'pinia';
+const useSong = useSongStore()
+const { isPlaying, currentTrack } = storeToRefs(useSong)
+
+let isHover = ref(false)
+let isTrackTime = ref(null)
+
+const props = defineProps({
+    track: Object,
+    artist: Object,
+    index: Number,
+})
+
+const { track, artist, index } = toRefs(props)
+
+onMounted(() => {
+    const audio = new Audio(track.value.path);
+    audio.addEventListener('loadedmetadata', function() {
+        const duration = audio.duration;
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
+        isTrackTime.value = minutes+':'+seconds.toString().padStart(2, '0')
+    });
+})
+</script>
 
 <style lang="scss" scoped>
 .list-container:hover {

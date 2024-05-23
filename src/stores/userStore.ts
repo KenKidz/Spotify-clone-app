@@ -10,7 +10,8 @@ import {
 import { auth } from '@/plugins/firebaseConfig'
 
 interface StoreInterface {
-  userInfo: User | null
+  userInfo: User | null,
+  documentId: string,
   isLoading: boolean
   hasFailed: boolean
   isAuth: boolean

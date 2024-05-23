@@ -1,7 +1,3 @@
-<script lang="ts" setup>
-import spotifyLogo from '/public/images/icons/spotify-logo.png'
-</script>
-
 <template>
   <v-navigation-drawer color="primary" permanent class="SideNav px-8 py-4">
     <RouterLink to="/">
@@ -34,6 +30,10 @@ import spotifyLogo from '/public/images/icons/spotify-logo.png'
     </v-list>
   </v-navigation-drawer>
 </template>
+
+<script lang="ts" setup>
+import spotifyLogo from '/public/images/icons/spotify-logo.png'
+</script>
 
 <style lang="scss" scoped>
 

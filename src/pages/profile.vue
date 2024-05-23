@@ -66,7 +66,7 @@
           <VCardActions class="pe-11">
             <VSpacer />
             <VBtn variant="elevated">Cancel</VBtn>
-            <VBtn variant="elevated" color="green-accent-4" @click="onSaveClick">Save</VBtn>
+            <VBtn :loading="loading" variant="elevated" color="green-accent-4" @click="onSaveClick">Save</VBtn>
           </VCardActions>
         </VCard>
       </VCol>
@@ -77,12 +77,13 @@
 <script setup lang="ts">
 import { emailValidator, phoneNumberValidator } from '@/utils/validators'
 import { updateEmail, updateProfile } from 'firebase/auth'
-import { app, auth } from '@/plugins/firebaseConfig'
-import { getDownloadURL, getStorage, ref as firebaseRef, uploadBytes } from 'firebase/storage'
+import { auth } from '@/plugins/firebaseConfig'
 import { useUserStore } from '@/stores/userStore'
 import defaultAvatar from '@images/avatars/default-avatar.png'
 import { useToast } from 'vue-toastification'
 import router from '@/router'
+import useStorage from '@/composables/useStorage'
+import useCollection from '@/composables/useCollection'
 
 definePage({
   meta: {
@@ -95,7 +96,11 @@ let { userInfo }= storeToRefs(userStore)
 const hoverEffect = ref<boolean>(false);
 const inputUpload = ref<any>()
 const fileInput = ref<any>()
+const errorFile = ref<string>("")
 const toast = useToast()
+const { url, uploadFile } = useStorage('images')
+const { setRecord } = useCollection('Users')
+const loading = ref<boolean>(false)
 
 const handleHover = (isHovering: boolean) => {
   hoverEffect.value = isHovering;
@@ -107,43 +112,42 @@ const onAvatarClick = () => {
 
 async function uploadImage(imageFile: any) {
   if (!imageFile) return; // Handle empty file selection
-
-  const storage = getStorage(app);
-  const storageRef = firebaseRef(storage, `images/${imageFile.name}`); // Adjust path as needed
-
-  try {
-    const snapshot = await uploadBytes(storageRef, imageFile);
-    userInfo.value.photoURL = await getDownloadURL(snapshot.ref)
-    console.log(userInfo.value?.photoURL)
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    // Handle upload errors
+  await uploadFile(imageFile)
+  const record = {
+    photoURL: url.value
   }
+  await setRecord(record, "photo")
 }
 
 const onChangeImage = async (e: any) => {
   const file = e.target.files[0];
-  fileInput.value = file
-  const reader = new FileReader();
-
-  reader.onload = (e) => {
-    userInfo.value.photoURL = e.target.result;
-  };
-
-  reader.readAsDataURL(file);
+  const typesFile = ["image/png", "image/jpeg"]
+  if(file && typesFile.includes(file.type)) {
+    fileInput.value = file
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      userInfo.value.photoURL = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    file.value = null
+    errorFile.value = "Please select a type file png or jpg"
+  }
 }
 
 const onSaveClick = async () => {
+  loading.value = true
+  await uploadImage(fileInput.value)
   await Promise.all([
-    uploadImage(fileInput.value),
     updateProfile(auth.currentUser, {
       displayName: userInfo.value?.displayName,
-      photoURL: userInfo.value?.photoURL,
       phoneNumber: userInfo.value?.phoneNumber,
+      photoURL: url.value
     }),
     updateEmail(auth.currentUser, userInfo.value?.email),
   ])
   toast.success("Save successful")
+  loading.value = false
 }
 
 const onBackClick = () => {

@@ -1,24 +1,3 @@
-<script setup>
-import SongRow from '@/components/SongRow.vue'
-import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
-import Heart from 'vue-material-design-icons/Heart.vue';
-import ClockTimeThreeOutline from 'vue-material-design-icons/ClockTimeThreeOutline.vue';
-import artist from '@/artist.json'
-
-import { useSongStore } from '@/stores/song'
-import { storeToRefs } from 'pinia';
-const useSong = useSongStore()
-const { isPlaying, currentTrack, currentArtist } = storeToRefs(useSong)
-
-const playFunc = () => {
-  if (currentTrack.value) {
-    useSong.playOrPauseThisSong(currentArtist.value, currentTrack.value)
-    return
-  }
-  useSong.playFromFirst()
-}
-</script>
-
 <template>
   <div class="pa-8 overflow-x-hidden">
     <div
@@ -29,7 +8,7 @@ const playFunc = () => {
 
     <div class="py-2"></div>
     <div class="d-flex align-center w-100 h-100" style="position: relative">
-      <img width="140" :src="artist.albumCover">
+      <img width="140" :src="artist.albumCover" alt="album-cover">
 
       <div class="w-100 ml-5">
         <div
@@ -81,6 +60,27 @@ const playFunc = () => {
     </ul>
   </div>
 </template>
+
+<script setup>
+import SongRow from '@/components/SongRow.vue'
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
+import Heart from 'vue-material-design-icons/Heart.vue';
+import ClockTimeThreeOutline from 'vue-material-design-icons/ClockTimeThreeOutline.vue';
+import artist from '@/artist.json'
+
+import { useSongStore } from '@/stores/song'
+import { storeToRefs } from 'pinia';
+const useSong = useSongStore()
+const { isPlaying, currentTrack, currentArtist } = storeToRefs(useSong)
+
+const playFunc = () => {
+  if (currentTrack.value) {
+    useSong.playOrPauseThisSong(currentArtist.value, currentTrack.value)
+    return
+  }
+  useSong.playFromFirst()
+}
+</script>
 
 <style scoped>
 .circle {

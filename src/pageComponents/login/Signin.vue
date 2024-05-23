@@ -1,93 +1,4 @@
-<script lang="ts" setup>
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/plugins/firebaseConfig'
-import router from '@/router'
-import { useUserStore } from '@/stores/userStore'
-import type { VForm } from 'vuetify/components'
-import { useToast } from 'vue-toastification'
-import { AuthErrorCodes } from '@/constants/enums'
-import { lengthValidator, passwordValidator, requiredValidator } from '@/utils/validators'
-import { AES, enc } from 'crypto-js'
 
-interface Emits {
-  (e: 'onSignupBtnClick'): void;
-
-  (e: 'onSignInGoogle'): void;
-}
-
-const emit = defineEmits<Emits>()
-const workingItem = ref<any>({})
-const userStore = useUserStore()
-const refVForm = ref<VForm>()
-const loading = ref<boolean>(false)
-const toast = useToast()
-const isPasswordVisible = ref<boolean>(false)
-const rememberMe = ref<boolean>(false)
-const cvsecretKey = ref<any>('secretKey_cv')
-
-onMounted(() => {
-  const dataRememberMe = JSON.parse(localStorage.getItem('cvrememberme'));
-  if(dataRememberMe && dataRememberMe?.email){
-    workingItem.value.email = dataRememberMe?.email;
-  }
-  if(dataRememberMe && dataRememberMe.password){
-    workingItem.value.password = AES.decrypt(dataRememberMe?.password, cvsecretKey.value).toString(enc.Utf8);
-  }
-  if(dataRememberMe && dataRememberMe.rememberme){
-    rememberMe.value = dataRememberMe?.rememberme;
-  }
-})
-
-const onSignUpBtnClick = () => {
-  emit('onSignupBtnClick')
-}
-
-const onLogIn = async () => {
-  refVForm.value?.validate()
-    .then(async ({ valid: isValid }) => {
-      if (isValid) {
-        loading.value = true
-        try {
-          const res = await signInWithEmailAndPassword(auth, workingItem.value.email, workingItem.value.password)
-          userStore.isAuth = true
-          if (res) {
-            if (rememberMe.value) {
-              const dataRememberMe = {
-                rememberMe: rememberMe.value,
-                password: workingItem.value.password.toLowerCase(),
-                email: workingItem.value.email
-              }
-              dataRememberMe.password = AES.encrypt(dataRememberMe.password, cvsecretKey.value).toString()
-              localStorage.setItem('cvrememberme', JSON.stringify(dataRememberMe))
-            } else {
-              localStorage.removeItem('cvrememberme')
-            }
-            router.replace('/')
-          }
-        } catch (error: any) {
-          switch (error.code) {
-            case AuthErrorCodes.USER_NOT_FOUND:
-              toast.error('User not found')
-              break
-            case AuthErrorCodes.INVALID_EMAIL:
-              toast.error('Invalid Email')
-              break
-            case AuthErrorCodes.WRONG_PASSWORD:
-              toast.error('Wrong password')
-              break
-            default:
-              toast.error('Something went wrong')
-          }
-        }
-        loading.value = false
-      }
-    })
-}
-
-const handleLoginWithGoogleClick = () => {
-  emit('onSignInGoogle')
-}
-</script>
 <template>
   <VRow>
     <VCol cols="12" sm="6">
@@ -104,13 +15,14 @@ const handleLoginWithGoogleClick = () => {
                 label="Email"
                 variant="outlined"
                 density="comfortable"
-                class="mt-16"
+                class="mt-16 mb-4"
                 autofocus
                 :rules="[requiredValidator, lengthValidator(workingItem.email, 25)]"
                 @keyup.enter="onLogIn"
               ></VTextField>
               <VTextField
                 v-model="workingItem.password"
+                class="mb-4"
                 label="Password"
                 variant="outlined"
                 density="comfortable"
@@ -121,7 +33,7 @@ const handleLoginWithGoogleClick = () => {
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               ></VTextField>
               <VRow>
-                <VCol sm="7" md="7" class="pb-0">
+                <VCol sm="7" md="7" class="pb-0 ma-auto">
                   <VCheckbox v-model="rememberMe" label="Remember me" class="mt-n1"></VCheckbox>
                 </VCol>
                 <VCol sm="5" md="5" class="pb-0 ma-auto">
@@ -134,7 +46,7 @@ const handleLoginWithGoogleClick = () => {
                     color="green-accent-4"
                     block
                     @click="onLogIn"
-                    :loading="loading"
+                    :loading="isPending"
                   >
                     Login in
                   </VBtn>
@@ -174,6 +86,75 @@ const handleLoginWithGoogleClick = () => {
     </VCol>
   </VRow>
 </template>
+<script lang="ts" setup>
+import router from '@/router'
+import type { VForm } from 'vuetify/components'
+import { useToast } from 'vue-toastification'
+import { lengthValidator, passwordValidator, requiredValidator } from '@/utils/validators'
+import { AES, enc } from 'crypto-js'
+import { useSignIn } from '@/composables/useSignin'
+
+interface Emits {
+  (e: 'onSignupBtnClick'): void;
+
+  (e: 'onSignInGoogle'): void;
+}
+
+const { error, isPending ,signIn } = useSignIn()
+const emit = defineEmits<Emits>()
+const workingItem = ref<any>({})
+const refVForm = ref<VForm>()
+const toast = useToast()
+const isPasswordVisible = ref<boolean>(false)
+const rememberMe = ref<boolean>(false)
+const cvsecretKey = ref<any>('secretKey_cv')
+
+onMounted(() => {
+  const dataRememberMe = JSON.parse(localStorage.getItem('cvrememberme'));
+  if(dataRememberMe && dataRememberMe?.email){
+    workingItem.value.email = dataRememberMe?.email;
+  }
+  if(dataRememberMe && dataRememberMe.password){
+    workingItem.value.password = AES.decrypt(dataRememberMe?.password, cvsecretKey.value).toString(enc.Utf8);
+  }
+  if(dataRememberMe && dataRememberMe.rememberme){
+    rememberMe.value = dataRememberMe?.rememberme;
+  }
+})
+
+const onSignUpBtnClick = () => {
+  emit('onSignupBtnClick')
+}
+
+const onLogIn = async () => {
+  refVForm.value?.validate()
+    .then(async ({ valid: isValid }) => {
+      if (isValid) {
+        await signIn(workingItem.value.email, workingItem.value.password)
+        if(!error.value) {
+          if (rememberMe.value) {
+            const dataRememberMe = {
+              rememberMe: rememberMe.value,
+              password: workingItem.value.password.toLowerCase(),
+              email: workingItem.value.email
+            }
+            dataRememberMe.password = AES.encrypt(dataRememberMe.password, cvsecretKey.value).toString()
+            localStorage.setItem('cvrememberme', JSON.stringify(dataRememberMe))
+          } else {
+            localStorage.removeItem('cvrememberme')
+          }
+          router.replace('/')
+        } else {
+          toast.error(error.value)
+        }
+      }
+    })
+}
+
+const handleLoginWithGoogleClick = () => {
+  emit('onSignInGoogle')
+}
+</script>
 
 <style lang="scss" scoped>
 .v-application .rounded-bl-xl {

@@ -1,78 +1,3 @@
-<script lang="ts" setup>
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { auth } from '@/plugins/firebaseConfig'
-import router from '@/router'
-import { useUserStore } from '@/stores/userStore'
-import { useToast } from 'vue-toastification'
-import { AuthErrorCodes } from '@/constants/enums'
-import type { VForm } from 'vuetify/components'
-import { emailValidator, passwordValidator, requiredValidator } from '@/utils/validators'
-
-interface UserSignUp {
-  firstName?: string
-  lastName?: string
-  email: string
-  password: string
-}
-interface Props {
-  step: number
-}
-interface Emits {
-  (e: "onLogInBtnClick"): void;
-  (e: "onSignUp", value: any): void;
-}
-
-const toast = useToast()
-const emit = defineEmits<Emits>()
-const workingItem = ref<UserSignUp>(<UserSignUp>{})
-const userStore = useUserStore()
-const isPasswordVisible = ref<boolean>(false)
-const refVForm = ref<VForm>()
-const loading = ref<boolean>(false)
-
-const onSignUp = async () => {
-  refVForm.value?.validate()
-    .then(async ({valid: isValid}) => {
-      if (isValid) {
-        loading.value = true
-        try {
-          const res = await createUserWithEmailAndPassword(auth, workingItem.value.email, workingItem.value.password)
-          await updateProfile(auth.currentUser, {
-            displayName: workingItem.value?.lastName + ' ' + workingItem.value?.firstName,
-          }).catch((error: any) => {
-            console.log(error)
-          })
-          if (res) {
-            userStore.isAuth = true
-            router.replace('/')
-          }
-        } catch (error: any) {
-          switch(error.code) {
-            case AuthErrorCodes.EMAIL_ALREADY_IN_USE:
-              toast.error("Email already in use")
-              break
-            case AuthErrorCodes.INVALID_EMAIL:
-              toast.error("Invalid email")
-              break
-            case AuthErrorCodes.OPERATION_NOT_ALLOWED:
-              toast.error("Operation not allowed")
-              break
-            case AuthErrorCodes.WEAK_PASSWORD:
-              toast.error("Weak password")
-              break
-            default:
-              toast.error("Something went wrong")
-          }
-        }
-        loading.value = false
-      }
-    })
-}
-
-const onLoginBtnClick = () => {
-  emit('onLogInBtnClick')
-}
-</script>
 <template>
   <v-row>
     <v-col cols="12" md="6" class="bg-green-accent-4 rounded-br-xl">
@@ -107,7 +32,7 @@ const onLoginBtnClick = () => {
                     variant="outlined"
                     density="comfortable"
                     color="green-accent-4"
-                    class="mt-4"
+                    class="mt-4 mb-4"
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -117,7 +42,7 @@ const onLoginBtnClick = () => {
                     variant="outlined"
                     density="comfortable"
                     color="green-accent-4"
-                    class="mt-4"
+                    class="mt-4 mb-4"
                   />
                 </v-col>
               </v-row>
@@ -127,11 +52,13 @@ const onLoginBtnClick = () => {
                 variant="outlined"
                 density="comfortable"
                 color="green-accent-4"
+                class="mb-4"
                 :rules="[requiredValidator, emailValidator]"
                 @keyup.enter="onSignUp"
               />
               <v-text-field
                 v-model="workingItem.password"
+                class="mb-4"
                 label="Password *"
                 variant="outlined"
                 density="comfortable"
@@ -143,7 +70,7 @@ const onLoginBtnClick = () => {
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
               <v-row>
-                <v-col cols="12" sm="7">
+                <v-col class="ma-auto" cols="12" sm="7">
                   <v-checkbox
                     label="I Accept AAE"
                     class="mt-n1"
@@ -157,7 +84,7 @@ const onLoginBtnClick = () => {
               <v-btn
                 color="green-accent-4"
                 block
-                :loading="loading"
+                :loading="isPending"
                 @click="onSignUp"
               >
                 Sign up
@@ -184,6 +111,58 @@ const onLoginBtnClick = () => {
     </v-col>
   </v-row>
 </template>
+<script lang="ts" setup>
+import router from '@/router'
+import { useUserStore } from '@/stores/userStore'
+import { useToast } from 'vue-toastification'
+import type { VForm } from 'vuetify/components'
+import { emailValidator, passwordValidator, requiredValidator } from '@/utils/validators'
+import { useSignUp } from '@/composables/useSignup'
+import useCollection from '@/composables/useCollection'
+
+interface UserSignUp {
+  firstName?: string
+  lastName?: string
+  email: string
+  password: string
+}
+interface Props {
+  step: number
+}
+interface Emits {
+  (e: "onLogInBtnClick"): void;
+  (e: "onSignUp", value: any): void;
+}
+
+const toast = useToast()
+const emit = defineEmits<Emits>()
+const workingItem = ref<UserSignUp>(<UserSignUp>{})
+const userStore = useUserStore()
+const isPasswordVisible = ref<boolean>(false)
+const refVForm = ref<VForm>()
+const { error, isPending, signUp } = useSignUp()
+const { addRecord } = useCollection('Users')
+
+const onSignUp = async () => {
+  refVForm.value?.validate()
+    .then(async ({valid: isValid}) => {
+      if (isValid) {
+        const fullName = workingItem.value?.lastName + ' ' + workingItem.value?.firstName
+        await signUp(workingItem.value.email, workingItem.value.password, fullName)
+        if(!error.value) {
+          userStore.isAuth = true
+          router.replace('/')
+        } else {
+          toast.error(error.value)
+        }
+      }
+    })
+}
+
+const onLoginBtnClick = () => {
+  emit('onLogInBtnClick')
+}
+</script>
 
 <style lang="scss" scoped>
 .v-application .rounded-bl-xl {
