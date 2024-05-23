@@ -1,37 +1,3 @@
-<script lang="ts" setup>
-import { profileMenu } from '@/constants/enums'
-import { useUserStore } from '@/stores/userStore'
-import router from '@/router'
-import defaultAvatar from "@images/avatars/default-avatar.png";
-
-const userStore = useUserStore()
-const route = useRoute()
-const itemsInProfile = ref<any>([
-  { id: profileMenu.Profile, title: 'Profile' },
-  { id: profileMenu.Logout, title: 'Log out' }
-])
-
-const isCurrentPage = computed(() => {
-  return route.path == '/'
-})
-
-const loadComponent = (value: any) => {
-  if(value.id == profileMenu.Logout) {
-    userStore.logOut()
-  } else {
-    router.push('/profile')
-  }
-}
-
-const onBackClick = () => {
-  router.go(-1)
-}
-
-const onNextClick = () => {
-  router.go(1)
-}
-</script>
-
 <template>
   <v-app-bar v-if="userStore.userInfo" class="TopNav">
     <div class="ml-4">
@@ -85,6 +51,40 @@ const onNextClick = () => {
     </VAvatar>
   </v-app-bar>
 </template>
+
+<script lang="ts" setup>
+import { profileMenu } from '@/constants/enums'
+import { useUserStore } from '@/stores/userStore'
+import router from '@/router'
+import defaultAvatar from "@images/avatars/default-avatar.png";
+
+const userStore = useUserStore()
+const route = useRoute()
+const itemsInProfile = ref<any>([
+  { id: profileMenu.Profile, title: 'Profile' },
+  { id: profileMenu.Logout, title: 'Log out' }
+])
+
+const isCurrentPage = computed(() => {
+  return route.path == '/'
+})
+
+const loadComponent = (value: any) => {
+  if(value.id == profileMenu.Logout) {
+    userStore.logOut()
+  } else {
+    router.push('/profile')
+  }
+}
+
+const onBackClick = () => {
+  router.go(-1)
+}
+
+const onNextClick = () => {
+  router.go(1)
+}
+</script>
 
 <style lang="scss" scoped>
 .TopNav {

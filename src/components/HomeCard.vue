@@ -1,22 +1,3 @@
-<script lang="ts" setup>
-import { toRefs } from 'vue'
-import { convertDateTime } from '../utils'
-
-interface Props {
-  item?: any
-}
-
-const router = useRouter()
-const route = useRoute()
-const props = withDefaults(defineProps<Props>(), {
-  item: {}
-})
-const { item } = toRefs(props)
-const goToLibrary = () => {
-  router.push(route.path + `Library/${item.value.id}`)
-}
-</script>
-
 <template>
   <div @click="goToLibrary" class="home-card rounded-lg">
     <VImg class="rounded-lg" :src="item.coverArt.sources[2].url" height="160" width="160" cover alt="thumb-img" />
@@ -37,6 +18,24 @@ const goToLibrary = () => {
     <div class="text-gray-400 pt-1 pb-3" style="font-size: 14px">{{ convertDateTime(item.releaseDate.isoString) }}</div>
   </div>
 </template>
+<script lang="ts" setup>
+import { toRefs } from 'vue'
+import { convertDateTime } from '../utils'
+
+interface Props {
+  item?: any
+}
+
+const router = useRouter()
+const route = useRoute()
+const props = withDefaults(defineProps<Props>(), {
+  item: {}
+})
+const { item } = toRefs(props)
+const goToLibrary = () => {
+  router.push(route.path + `Library/${item.value.id}`)
+}
+</script>
 
 <style lang="scss" scoped>
 .home-card {

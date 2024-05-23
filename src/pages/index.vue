@@ -1,23 +1,3 @@
-<script setup lang="ts">
-import Podcasts from '@/services/Podcasts.service'
-
-const podcastItems = ref<any>({})
-
-onBeforeMount(async () => {
-  await loadData()
-})
-
-const loadData = async () => {
-  await getPodcast()
-}
-
-const getPodcast = async () => {
-  const res = await Podcasts.getPodcasts()
-  podcastItems.value = res.data.podcastUnionV2.episodesV2
-}
-
-</script>
-
 <template>
   <div style="margin-bottom: 90px;">
     <div class="pa-6">
@@ -147,6 +127,26 @@ const getPodcast = async () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import Podcasts from '@/services/Podcasts.service'
+
+const podcastItems = ref<any>({})
+
+onBeforeMount(async () => {
+  await loadData()
+})
+
+const loadData = async () => {
+  await getPodcast()
+}
+
+const getPodcast = async () => {
+  const res = await Podcasts.getPodcasts()
+  podcastItems.value = res.data.podcastUnionV2.episodesV2
+}
+
+</script>
 
 <style lang="scss" scoped>
 .text-2xl {

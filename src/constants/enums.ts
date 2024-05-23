@@ -10,5 +10,6 @@ export enum AuthErrorCodes {
   WEAK_PASSWORD = "auth/weak-password",
   USER_NOT_FOUND = "auth/user-not-found",
   WRONG_PASSWORD = "auth/wrong-password",
-  INVALID_CREDENTIAL = "auth/invalid-credential"
+  INVALID_CREDENTIAL = "auth/invalid-credential",
+  INVALID_LOGIN_CREDENTIALS = "auth/invalid_login_credentials"
 }

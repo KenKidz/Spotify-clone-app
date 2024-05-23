@@ -14,6 +14,7 @@
             <img
                 class="libra-img"
                 :src="image || ''"
+                alt="libra-img"
             >
         </div>
     </RouterLink>

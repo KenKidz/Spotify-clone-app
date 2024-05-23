@@ -1,20 +1,3 @@
-<script setup lang="ts">
-import spotifyLogo from '/public/images/icons/spotify-logo.png'
-import { useUserStore } from '@/stores/userStore'
-import { useSongStore } from '@/stores/song'
-import { storeToRefs } from 'pinia'
-import VerticalNavLayout from '@/layouts/components/VerticalNavLayout.vue'
-import HorizontalNavLayout from '@/layouts/components/HorizontalNavLayout.vue'
-
-const userStore = useUserStore()
-const useSong = useSongStore()
-const { isPlaying, currentTrack } = storeToRefs(useSong)
-
-onMounted(() => {
-  isPlaying.value = false
-})
-</script>
-
 <template>
   <VLayout>
     <VerticalNavLayout />
@@ -30,6 +13,20 @@ onMounted(() => {
     <MusicPlayer v-if="currentTrack"/>
   </VLayout>
 </template>
+
+<script setup lang="ts">
+import { useSongStore } from '@/stores/song'
+import { storeToRefs } from 'pinia'
+import VerticalNavLayout from '@/layouts/components/VerticalNavLayout.vue'
+import HorizontalNavLayout from '@/layouts/components/HorizontalNavLayout.vue'
+
+const useSong = useSongStore()
+const { isPlaying, currentTrack } = storeToRefs(useSong)
+
+onMounted(() => {
+  isPlaying.value = false
+})
+</script>
 
 <style lang="scss" scoped>
 .Main {

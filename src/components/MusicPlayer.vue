@@ -1,63 +1,3 @@
-<script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-import MusicPlayerVolume from '../components/MusicPlayerVolume.vue'
-import Heart from 'vue-material-design-icons/Heart.vue'
-import PictureInPictureBottomRight from 'vue-material-design-icons/PictureInPictureBottomRight.vue'
-import SkipBackward from 'vue-material-design-icons/SkipBackward.vue'
-import SkipForward from 'vue-material-design-icons/SkipForward.vue'
-
-import { useSongStore } from '../stores/song'
-import { storeToRefs } from 'pinia'
-
-const useSong = useSongStore()
-const { isPlaying, audio, currentTrack, currentArtist } = storeToRefs(useSong)
-const duration = ref<number>(0)
-
-let isHover = ref<boolean>(false)
-let isTrackTimeCurrent = ref<any>(null)
-let isTrackTimeTotal = ref<any>(null)
-let seeker = ref<any>(0)
-let seekerContainer = ref<any>(null)
-
-onMounted(() => {
-  if (audio.value) {
-    setTimeout(() => {
-      timeupdate()
-    }, 300)
-  }
-})
-
-const timeupdate = () => {
-  if(audio.value) {
-    audio.value.addEventListener('timeupdate', function() {
-      duration.value = audio.value.duration
-      const minutes = Math.floor(audio.value.currentTime / 60)
-      const seconds = Math.floor(audio.value.currentTime - minutes * 60)
-      isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
-      const minutesTotal = Math.floor(duration.value / 60)
-      const secondsTotal = Math.floor(duration.value % 60)
-      isTrackTimeTotal.value = minutesTotal + ':' + secondsTotal.toString().padStart(2, '0')
-      seeker.value = audio.value.currentTime
-    })
-  }
-}
-
-const seekAudio = () => {
-  audio.value.currentTime = seeker.value
-}
-
-watch(() => audio.value, () => {
-  timeupdate()
-})
-
-watch(() => isTrackTimeCurrent.value, (time) => {
-  if (time && time == isTrackTimeTotal.value) {
-    useSong.nextSong(currentTrack.value)
-  }
-})
-
-</script>
-
 <template>
   <VCard
     v-if="audio"
@@ -135,6 +75,66 @@ watch(() => isTrackTimeCurrent.value, (time) => {
     </VRow>
   </VCard>
 </template>
+
+<script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
+import MusicPlayerVolume from '../components/MusicPlayerVolume.vue'
+import Heart from 'vue-material-design-icons/Heart.vue'
+import PictureInPictureBottomRight from 'vue-material-design-icons/PictureInPictureBottomRight.vue'
+import SkipBackward from 'vue-material-design-icons/SkipBackward.vue'
+import SkipForward from 'vue-material-design-icons/SkipForward.vue'
+
+import { useSongStore } from '../stores/song'
+import { storeToRefs } from 'pinia'
+
+const useSong = useSongStore()
+const { isPlaying, audio, currentTrack, currentArtist } = storeToRefs(useSong)
+const duration = ref<number>(0)
+
+let isHover = ref<boolean>(false)
+let isTrackTimeCurrent = ref<any>(null)
+let isTrackTimeTotal = ref<any>(null)
+let seeker = ref<any>(0)
+let seekerContainer = ref<any>(null)
+
+onMounted(() => {
+  if (audio.value) {
+    setTimeout(() => {
+      timeupdate()
+    }, 300)
+  }
+})
+
+const timeupdate = () => {
+  if(audio.value && audio.value instanceof HTMLAudioElement) {
+    audio.value.addEventListener('timeupdate', function() {
+      duration.value = audio.value.duration
+      const minutes = Math.floor(audio.value.currentTime / 60)
+      const seconds = Math.floor(audio.value.currentTime - minutes * 60)
+      isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
+      const minutesTotal = Math.floor(duration.value / 60)
+      const secondsTotal = Math.floor(duration.value % 60)
+      isTrackTimeTotal.value = minutesTotal + ':' + secondsTotal.toString().padStart(2, '0')
+      seeker.value = audio.value.currentTime
+    })
+  }
+}
+
+const seekAudio = () => {
+  audio.value.currentTime = seeker.value
+}
+
+watch(() => audio.value, () => {
+  timeupdate()
+})
+
+watch(() => isTrackTimeCurrent.value, (time) => {
+  if (time && time == isTrackTimeTotal.value) {
+    useSong.nextSong(currentTrack.value)
+  }
+})
+
+</script>
 
 <style lang="scss" scoped>
 .music-player {
