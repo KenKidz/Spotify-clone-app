@@ -3,14 +3,14 @@
     <VRow align="center" justify="center">
       <VCol cols="12" sm="8" md="5">
         <VCard class="elevation-6 mt-16" color="black" rounded="xl">
-          <VCardTitle>
-            <IconBtn class="ms-5" @click="onBackClick">
+          <VCardTitle class="d-flex align-center">
+            <IconBtn variant="outlined" class="mx-5" @click="onBackClick">
               <VIcon size="25">tabler-arrow-left</VIcon>
             </IconBtn>
+            <h3>My Profile</h3>
           </VCardTitle>
           <VCardText>
             <div class="px-8">
-              <h2>My Profile</h2>
               <div class="text-center my-6">
                 <VAvatar
                   class="cursor-pointer mx-auto"
